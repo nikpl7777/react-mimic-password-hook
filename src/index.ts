@@ -2,6 +2,8 @@ import React from 'react'
 
 type HTMLTextInputElement = HTMLInputElement | HTMLTextAreaElement
 
+type NextValueString = string & { kind: 'nextValue' }
+
 export type UseMimicPasswordProps<T extends HTMLTextInputElement> = {
   readonly mask?: string
   readonly delay?: number
@@ -16,7 +18,7 @@ const defaults: UseMimicPasswordProps<HTMLTextInputElement> = {
 }
 
 export type UseMimicReturn<T extends HTMLTextInputElement> = [
-  string, string, (e: React.ChangeEvent<T>) => void,
+  string, string, (e: React.ChangeEvent<T>) => NextValueString,
 ]
 
 export const useMimicPassword = <T extends HTMLTextInputElement>(
@@ -39,7 +41,7 @@ export const useMimicPassword = <T extends HTMLTextInputElement>(
   const [value, setValue] = React.useState('')
   const [presentation, setPresentation] = React.useState('')
 
-  const onChange = React.useCallback((e: React.ChangeEvent<T>) => {
+  const onChange = React.useCallback((e: React.ChangeEvent<T>): NextValueString => {
     clearTimeout(timer.current)
 
     inputRef.current = e.target
@@ -77,6 +79,8 @@ export const useMimicPassword = <T extends HTMLTextInputElement>(
     if (typeof handleChange === 'function') {
       handleChange(e)
     }
+
+    return newValue as NextValueString
   }, [handleChange, setValue, setPresentation, timer, delay, mask, presentation, value, cursorPos])
 
   // Restore cursor position once presentation has changed

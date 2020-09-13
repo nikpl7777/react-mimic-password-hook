@@ -47,6 +47,7 @@ exports.useMimicPassword = (props) => {
         if (typeof handleChange === 'function') {
             handleChange(e);
         }
+        return newValue;
     }, [handleChange, setValue, setPresentation, timer, delay, mask, presentation, value, cursorPos]);
     // Restore cursor position once presentation has changed
     react_1.default.useEffect(() => {
