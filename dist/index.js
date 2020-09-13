@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.useMimicPassword = void 0;
 const react_1 = __importDefault(require("react"));
+const utils_1 = require("./utils");
 const defaults = {
     mask: '•',
     delay: 1000,
@@ -23,7 +24,7 @@ exports.useMimicPassword = (props) => {
         cursorPos.current = inputRef.current.selectionEnd || 0;
         const inputValue = inputRef.current.value;
         // This is going to be the new original value (unmasked)
-        const newValue = inputValue.replace(new RegExp(`${cursorPos.current ? `(^\\${mask}{1,${cursorPos.current}})|` : ''}(\\${mask}+)`, 'g'), (match, _, offset) => {
+        const newValue = inputValue.replace(utils_1.makeSearchMaskRegExp(cursorPos.current, mask), (match, _, offset) => {
             if (!offset && cursorPos.current) {
                 return value.substr(0, match.length);
             }
@@ -53,7 +54,7 @@ exports.useMimicPassword = (props) => {
     react_1.default.useEffect(() => {
         var _a;
         (_a = inputRef.current) === null || _a === void 0 ? void 0 : _a.setSelectionRange(cursorPos.current, cursorPos.current);
-    }, [presentation, inputRef]);
+    }, [presentation, inputRef, cursorPos]);
     return [value, presentation, onChange];
 };
 //# sourceMappingURL=index.js.map
