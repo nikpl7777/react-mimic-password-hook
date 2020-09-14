@@ -6,6 +6,7 @@
   "author": "Mykola Vasylenko <nikpl777@gmail.com>",
   "main": "dist/index.js",
   "license": "MIT",
+  "keywords": ["react", "react-hooks", "password"],
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.0.2",
