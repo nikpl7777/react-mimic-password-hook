@@ -43,6 +43,10 @@ export const useMimicPassword = <T extends HTMLTextInputElement>(
     [props],
   )
 
+  if (mask.length !== 1) {
+    throw new Error('`mask` should be a string with only one symbol.')
+  }
+
   const timer = React.useRef<number | undefined>()
   const cursorPos = React.useRef<number>(0)
   const inputRef = React.useRef<T | null>(null)
