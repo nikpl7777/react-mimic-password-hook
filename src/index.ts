@@ -49,10 +49,9 @@ export const useMimicPassword = <T extends HTMLTextInputElement>(
 
   const [value, setValue] = React.useState('')
   const [presentation, setPresentation] = React.useState('')
+  const [futurePresentation, setFuturePresentation] = React.useState('')
 
   const onChange = React.useCallback((e: React.ChangeEvent<T>): NextValueString => {
-    clearTimeout(timer.current)
-
     inputRef.current = e.target
 
     cursorPos.current = inputRef.current.selectionEnd || 0
@@ -82,23 +81,29 @@ export const useMimicPassword = <T extends HTMLTextInputElement>(
 
     setValue(newValue)
     setPresentation(newPresentantion)
-
-    timer.current = setTimeout(() => {
-      cursorPos.current = inputRef?.current?.selectionEnd || 0
-      setPresentation(new Array(inputValue.length + 1).join(mask))
-    }, delay)
+    setFuturePresentation(new Array(inputValue.length + 1).join(mask))
 
     if (typeof handleChange === 'function') {
       handleChange(newValue, e)
     }
 
     return newValue as NextValueString
-  }, [handleChange, setValue, setPresentation, timer, delay, mask, presentation, value, cursorPos])
+  }, [timer, delay, mask, presentation, value, cursorPos])
 
   // Restore cursor position once presentation has changed
   React.useEffect(() => {
     inputRef.current?.setSelectionRange(cursorPos.current, cursorPos.current)
   }, [presentation, inputRef, cursorPos])
+
+  // Set futurePresentation as presentation after the timeout
+  React.useEffect(() => {
+    if (presentation !== futurePresentation && futurePresentation) {
+      clearTimeout(timer.current)
+      timer.current = setTimeout(() => setPresentation(futurePresentation), delay) as unknown as number
+    }
+
+    return () => clearTimeout(timer.current)
+  }, [timer, presentation, futurePresentation, delay])
 
   return [value, presentation, onChange]
 }

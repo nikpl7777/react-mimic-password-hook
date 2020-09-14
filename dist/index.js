@@ -18,8 +18,8 @@ exports.useMimicPassword = (props) => {
     const inputRef = react_1.default.useRef(null);
     const [value, setValue] = react_1.default.useState('');
     const [presentation, setPresentation] = react_1.default.useState('');
+    const [futurePresentation, setFuturePresentation] = react_1.default.useState('');
     const onChange = react_1.default.useCallback((e) => {
-        clearTimeout(timer.current);
         inputRef.current = e.target;
         cursorPos.current = inputRef.current.selectionEnd || 0;
         const inputValue = inputRef.current.value;
@@ -30,31 +30,36 @@ exports.useMimicPassword = (props) => {
             }
             return value.substr(-match.length);
         });
+        let newPresentantion = '';
         // Mask the value leaving the last character entered intact
-        let maskedValue = '';
         if (mode === 'persymbol') {
-            maskedValue = inputValue.split('').map((c, index) => (index === cursorPos.current - 1 ? c : mask)).join('');
+            newPresentantion = inputValue.split('').map((c, index) => (index === cursorPos.current - 1 ? c : mask)).join('');
         }
         else {
-            maskedValue = inputValue;
+            // Keep entered value as is until timer hides everything
+            newPresentantion = inputValue;
         }
         setValue(newValue);
-        setPresentation(maskedValue);
-        timer.current = setTimeout(() => {
-            var _a;
-            cursorPos.current = ((_a = inputRef === null || inputRef === void 0 ? void 0 : inputRef.current) === null || _a === void 0 ? void 0 : _a.selectionEnd) || 0;
-            setPresentation(new Array(inputValue.length + 1).join(mask));
-        }, delay);
+        setPresentation(newPresentantion);
+        setFuturePresentation(new Array(inputValue.length + 1).join(mask));
         if (typeof handleChange === 'function') {
-            handleChange(e);
+            handleChange(newValue, e);
         }
         return newValue;
-    }, [handleChange, setValue, setPresentation, timer, delay, mask, presentation, value, cursorPos]);
+    }, [timer, delay, mask, presentation, value, cursorPos]);
     // Restore cursor position once presentation has changed
     react_1.default.useEffect(() => {
         var _a;
         (_a = inputRef.current) === null || _a === void 0 ? void 0 : _a.setSelectionRange(cursorPos.current, cursorPos.current);
     }, [presentation, inputRef, cursorPos]);
+    // Set futurePresentation as presentation after the timeout
+    react_1.default.useEffect(() => {
+        if (presentation !== futurePresentation && futurePresentation) {
+            clearTimeout(timer.current);
+            timer.current = setTimeout(() => setPresentation(futurePresentation), delay);
+        }
+        return () => clearTimeout(timer.current);
+    }, [timer, presentation, futurePresentation, delay]);
     return [value, presentation, onChange];
 };
 //# sourceMappingURL=index.js.map
