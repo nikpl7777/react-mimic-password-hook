@@ -3,7 +3,6 @@
     "target": "es6",
     "lib": [
       "dom",
-      "dom.iterable",
       "esnext"
     ],
     "allowJs": true,
@@ -19,14 +18,10 @@
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
-    "baseUrl": "./",
     "sourceMap": true,
     "outDir": "dist",
     "declaration": true,
-    "paths": {
-      "src/*": ["src/*"]
-    }
   },
-  "exclude": ["node_modules", "build", ".cache"],
+  "exclude": ["node_modules", "build", ".cache", "src/*.test.tsx", "src/*.test.ts"],
   "include": ["src/*"]
 }
