@@ -2,6 +2,7 @@
   "name": "react-mimic-password-hook",
   "version": "1.0.0",
   "description": "React hook to mimic mobile password behavior",
+  "author": "Mykola Vasylenko <nikpl777@gmail.com>",
   "main": "dist/index.js",
   "license": "MIT",
   "devDependencies": {
